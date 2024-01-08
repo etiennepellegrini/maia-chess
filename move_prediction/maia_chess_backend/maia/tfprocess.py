@@ -117,10 +117,11 @@ class TFProcess:
         self.renorm_momentum = self.cfg['training'].get('renorm_momentum', 0.99)
 
         gpus = tf.config.experimental.list_physical_devices('GPU')
-        tf.config.experimental.set_visible_devices(gpus[self.cfg['gpu']], 'GPU')
-        tf.config.experimental.set_memory_growth(gpus[self.cfg['gpu']], True)
-        if self.model_dtype == tf.float16:
-            tf.keras.mixed_precision.experimental.set_policy('mixed_float16')
+        if len(gpus) > 0:
+            tf.config.experimental.set_visible_devices(gpus[self.cfg['gpu']], 'GPU')
+            tf.config.experimental.set_memory_growth(gpus[self.cfg['gpu']], True)
+            if self.model_dtype == tf.float16:
+                tf.keras.mixed_precision.experimental.set_policy('mixed_float16')
 
         self.global_step = tf.Variable(0, name='global_step', trainable=False, dtype=tf.int64)
 
