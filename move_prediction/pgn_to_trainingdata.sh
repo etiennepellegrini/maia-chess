@@ -5,8 +5,8 @@ max_procs=10
 
 #sorry these are relative only
 #remove the $PWD to make work with absolute paths
-input_file=$PWD/$1
-output_files=$PWD/$2
+input_file=$1
+output_files=$2
 mkdir -p $output_files
 
 mkdir -p $output_files/blocks
@@ -18,7 +18,7 @@ cd $output_files/blocks
 #using tool from:
 #https://www.cs.kent.ac.uk/people/staff/djb/pgn-extract/
 
-pgn-extract -7 -C -N  -#1000 $input_file
+pgn-extract -7 -C -N  -#500 $input_file
 
 #use the first 3000 as validation set
 mv {1..3}.pgn $output_files/validation/
@@ -39,7 +39,7 @@ for data_type in "training" "validation"; do
         #using tool from:
         #https://github.com/DanielUranga/trainingdata-tool
         trainingdata-tool ../$p &
-        while [ `echo $(pgrep -c -P$$)` -gt $max_procs ]; do
+        while [ `echo $(pgrep -P$$) | wc -l` -gt $max_procs ]; do
             printf "waiting\r"
             sleep 1
         done
